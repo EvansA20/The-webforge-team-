@@ -163,15 +163,8 @@
             width: 100%;
             z-index: 1000;
             padding: 20px 0;
-            transition: var(--transition);
             background-color: rgba(255, 255, 255, 0.95);
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        header.scrolled {
-            padding: 15px 0;
-            background-color: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
         .nav-container {
@@ -289,7 +282,6 @@
         .hero-text {
             flex: 1;
             padding-right: 30px;
-            animation: fadeInLeft 1s ease-out;
         }
 
         .hero-text h1 {
@@ -325,7 +317,6 @@
         .hero-image {
             flex: 1;
             text-align: center;
-            animation: fadeInRight 1s ease-out;
         }
 
         .hero-image img {
@@ -789,62 +780,6 @@
             font-size: 0.9rem;
         }
 
-        /* Animations */
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
         /* Responsive Design */
         @media (max-width: 992px) {
             .hero-content {
@@ -1010,7 +945,7 @@
             
             <div class="team-departments">
                 <!-- Team Lead -->
-                <div class="department-card fade-in">
+                <div class="department-card">
                     <div class="department-icon">
                         <i class="fas fa-user-tie"></i>
                     </div>
@@ -1021,7 +956,7 @@
                 </div>
                 
                 <!-- Project Manager -->
-                <div class="department-card fade-in">
+                <div class="department-card">
                     <div class="department-icon">
                         <i class="fas fa-tasks"></i>
                     </div>
@@ -1032,7 +967,7 @@
                 </div>
                 
                 <!-- Frontend Department -->
-                <div class="department-card fade-in">
+                <div class="department-card">
                     <div class="department-icon">
                         <i class="fas fa-desktop"></i>
                     </div>
@@ -1043,7 +978,7 @@
                 </div>
                 
                 <!-- Backend Department -->
-                <div class="department-card fade-in">
+                <div class="department-card">
                     <div class="department-icon">
                         <i class="fas fa-server"></i>
                     </div>
@@ -1054,7 +989,7 @@
                 </div>
                 
                 <!-- UI/UX Department -->
-                <div class="department-card fade-in">
+                <div class="department-card">
                     <div class="department-icon">
                         <i class="fas fa-palette"></i>
                     </div>
@@ -1065,7 +1000,7 @@
                 </div>
                 
                 <!-- Finance Department -->
-                <div class="department-card fade-in">
+                <div class="department-card">
                     <div class="department-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
@@ -1076,7 +1011,7 @@
                 </div>
                 
                 <!-- Security Analyst -->
-                <div class="department-card fade-in">
+                <div class="department-card">
                     <div class="department-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
@@ -1097,7 +1032,7 @@
             </div>
             
             <div class="services-grid">
-                <div class="service-card fade-in">
+                <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-laptop-code"></i>
                     </div>
@@ -1105,7 +1040,7 @@
                     <p>We build responsive, high-performance websites and web applications tailored to your specific business needs.</p>
                 </div>
                 
-                <div class="service-card fade-in">
+                <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
@@ -1113,7 +1048,7 @@
                     <p>Our designs work perfectly on all devices, from desktop to mobile, ensuring optimal user experience everywhere.</p>
                 </div>
                 
-                <div class="service-card fade-in">
+                <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-bolt"></i>
                     </div>
@@ -1121,7 +1056,7 @@
                     <p>We optimize websites for speed and performance, improving SEO rankings and user satisfaction.</p>
                 </div>
                 
-                <div class="service-card fade-in">
+                <div class="service-card">
                     <div class="service-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
@@ -1142,7 +1077,7 @@
             <p class="team-intro" style="margin-bottom: 30px; text-align: center;">Get in touch with our team through any of these convenient methods. We're here to help with your web development needs!</p>
             
             <!-- Quick Contact Buttons -->
-            <div class="contact-buttons fade-in">
+            <div class="contact-buttons">
                 <a href="https://wa.me/2348153279248" target="_blank" class="contact-btn btn-whatsapp">
                     <i class="fab fa-whatsapp"></i>
                     <h4>WhatsApp</h4>
@@ -1165,7 +1100,7 @@
                 </a>
             </div>
             
-            <div class="contact-container fade-in" style="margin-top: 50px;">
+            <div class="contact-container" style="margin-top: 50px;">
                 <!-- Contact Information -->
                 <div class="contact-info-card">
                     <h3>Contact Information</h3>
@@ -1303,7 +1238,7 @@
                         <li><i class="fas fa-phone"></i> +234 813 065 1446</li>
                         <li><i class="fab fa-whatsapp"></i> +234 815 327 9248</li>
                         <li><i class="fas fa-envelope"></i> teamwebforge@gmail.com</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Ogbomoso Oyo State, Nigeria</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</li>
                     </ul>
                 </div>
                 
@@ -1322,6 +1257,7 @@
             
             <div class="copyright">
                 <p>&copy; 2026 WebForge Team. All rights reserved. Designed and developed by the WebForge team.</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">Ready for Vercel Deployment</p>
             </div>
         </div>
     </footer>
@@ -1391,7 +1327,6 @@
                     border-radius: 8px;
                     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
                     z-index: 1001;
-                    animation: slideIn 0.3s ease-out;
                 `;
                 
                 notification.innerHTML = `
@@ -1402,40 +1337,8 @@
                 document.body.appendChild(notification);
                 
                 setTimeout(() => {
-                    notification.style.animation = 'slideOut 0.3s ease-out';
-                    setTimeout(() => {
-                        document.body.removeChild(notification);
-                    }, 300);
+                    document.body.removeChild(notification);
                 }, 4000);
-                
-                // Add CSS for animation
-                if (!document.querySelector('#notification-styles')) {
-                    const style = document.createElement('style');
-                    style.id = 'notification-styles';
-                    style.textContent = `
-                        @keyframes slideIn {
-                            from {
-                                transform: translateX(100%);
-                                opacity: 0;
-                            }
-                            to {
-                                transform: translateX(0);
-                                opacity: 1;
-                            }
-                        }
-                        @keyframes slideOut {
-                            from {
-                                transform: translateX(0);
-                                opacity: 1;
-                            }
-                            to {
-                                transform: translateX(100%);
-                                opacity: 0;
-                            }
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
             }
         }
 
@@ -1462,34 +1365,6 @@
                     mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
                 });
             });
-            
-            // Header scroll effect
-            window.addEventListener('scroll', () => {
-                const header = document.getElementById('header');
-                if (window.scrollY > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-            
-            // Scroll animation for elements
-            const fadeElements = document.querySelectorAll('.fade-in');
-            
-            const fadeInOnScroll = () => {
-                fadeElements.forEach(element => {
-                    const elementTop = element.getBoundingClientRect().top;
-                    const elementVisible = 150;
-                    
-                    if (elementTop < window.innerHeight - elementVisible) {
-                        element.classList.add('visible');
-                    }
-                });
-            };
-            
-            // Check on load and scroll
-            window.addEventListener('load', fadeInOnScroll);
-            window.addEventListener('scroll', fadeInOnScroll);
             
             // Smooth scrolling for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
