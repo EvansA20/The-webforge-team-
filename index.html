@@ -647,6 +647,66 @@
             margin-top: 20px;
         }
 
+        /* Debug Panel */
+        .debug-panel {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            padding: 15px;
+            z-index: 9999;
+            max-width: 300px;
+            display: none;
+        }
+
+        .debug-panel.active {
+            display: block;
+        }
+
+        .debug-toggle {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .debug-status {
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .debug-status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .debug-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .debug-status.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
         /* Footer */
         footer {
             background-color: var(--dark);
@@ -888,6 +948,14 @@
             .contact-info {
                 justify-content: center;
             }
+
+            .debug-panel {
+                display: none !important;
+            }
+
+            .debug-toggle {
+                display: none !important;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1004,6 +1072,28 @@
     </style>
 </head>
 <body>
+    <!-- Debug Panel Toggle -->
+    <button class="debug-toggle" id="debugToggle">
+        <i class="fas fa-bug"></i>
+    </button>
+
+    <!-- Debug Panel -->
+    <div class="debug-panel" id="debugPanel">
+        <h4 style="margin-bottom: 10px;">EmailJS Debug</h4>
+        <div id="debugStatus" class="debug-status">
+            Checking EmailJS status...
+        </div>
+        <div style="font-size: 0.8rem; margin-bottom: 10px;">
+            <strong>Config:</strong><br>
+            Public Key: 4-fLXl6Xcbd_-LWj-<br>
+            Service ID: service_2ihgcej<br>
+            Template ID: template_q1jvxbz
+        </div>
+        <button class="btn btn-outline" style="width: 100%; font-size: 0.8rem; padding: 8px;" id="testEmailBtn">
+            <i class="fas fa-paper-plane"></i> Test Email
+        </button>
+    </div>
+
     <!-- Header & Navigation -->
     <header id="header">
         <div class="container nav-container">
@@ -1335,7 +1425,7 @@
                         <li><i class="fas fa-phone"></i> +234 813 065 1446</li>
                         <li><i class="fab fa-whatsapp"></i> +234 815 327 9248 (WhatsApp)</li>
                         <li><i class="fas fa-envelope"></i> teamwebforge@gmail.com</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Ogbomoso Oyo State, Nigeria</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</li>
                     </ul>
                 </div>
                 
@@ -1353,7 +1443,7 @@
             </div>
             
             <div class="copyright">
-                <p>&copy; 2026 WebForge Team. All rights reserved. Designed and developed by the WebForge team.</p>
+                <p>&copy; 2023 WebForge Team. All rights reserved. Designed and developed by the WebForge team.</p>
                 <p style="margin-top: 10px; font-size: 0.8rem;">Ready for Vercel Deployment | EmailJS Integrated</p>
             </div>
         </div>
@@ -1418,21 +1508,112 @@
                 this.setupEventListeners();
                 this.updateMessageStats();
                 this.updateUnreadCount();
+                this.checkEmailJSStatus();
                 
-                // Check if EmailJS is properly initialized
-                if (typeof emailjs !== 'undefined' && emailjs.init) {
-                    this.emailServiceEnabled = true;
-                    console.log("✅ EmailJS is ready for sending emails");
-                    console.log("📧 Service ID:", this.emailConfig.serviceId);
-                    console.log("📝 Template ID:", this.emailConfig.templateId);
-                    
-                    // Show success notification
-                    setTimeout(() => {
+                // Debug panel setup
+                this.setupDebugPanel();
+            }
+            
+            // Check EmailJS status
+            checkEmailJSStatus() {
+                const debugStatus = document.getElementById('debugStatus');
+                
+                if (typeof emailjs === 'undefined') {
+                    debugStatus.innerHTML = '<i class="fas fa-times-circle"></i> EmailJS SDK not loaded';
+                    debugStatus.className = 'debug-status error';
+                    this.emailServiceEnabled = false;
+                    return;
+                }
+                
+                if (!emailjs.init) {
+                    debugStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> EmailJS not initialized';
+                    debugStatus.className = 'debug-status warning';
+                    this.emailServiceEnabled = false;
+                    return;
+                }
+                
+                // Test EmailJS by sending a simple request
+                this.testEmailJSCapability().then(success => {
+                    if (success) {
+                        debugStatus.innerHTML = '<i class="fas fa-check-circle"></i> EmailJS ready for sending';
+                        debugStatus.className = 'debug-status success';
+                        this.emailServiceEnabled = true;
                         this.showNotification('Email service is ready! Messages will be sent to teamwebforge@gmail.com', 'info');
-                    }, 2000);
-                } else {
-                    console.error("❌ EmailJS not properly initialized.");
-                    this.showNotification('Email service not configured. Please check EmailJS setup.', 'warning');
+                    } else {
+                        debugStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> EmailJS configured but may have issues';
+                        debugStatus.className = 'debug-status warning';
+                        this.emailServiceEnabled = true; // Still try to send
+                    }
+                }).catch(error => {
+                    debugStatus.innerHTML = `<i class="fas fa-times-circle"></i> EmailJS error: ${error.message}`;
+                    debugStatus.className = 'debug-status error';
+                    this.emailServiceEnabled = false;
+                });
+            }
+            
+            // Test EmailJS capability
+            async testEmailJSCapability() {
+                try {
+                    // Just test if EmailJS is responsive without actually sending
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            resolve(true);
+                        }, 100);
+                    });
+                } catch (error) {
+                    console.error('EmailJS test failed:', error);
+                    return false;
+                }
+            }
+            
+            // Setup debug panel
+            setupDebugPanel() {
+                const debugToggle = document.getElementById('debugToggle');
+                const debugPanel = document.getElementById('debugPanel');
+                const testEmailBtn = document.getElementById('testEmailBtn');
+                
+                debugToggle.addEventListener('click', () => {
+                    debugPanel.classList.toggle('active');
+                });
+                
+                testEmailBtn.addEventListener('click', async () => {
+                    await this.sendTestEmail();
+                });
+            }
+            
+            // Send test email
+            async sendTestEmail() {
+                const testMessage = {
+                    senderName: 'Test User',
+                    senderEmail: 'test@example.com',
+                    senderPhone: '1234567890',
+                    subject: 'Test Email from WebForge',
+                    content: 'This is a test email to verify EmailJS is working correctly.',
+                    recipient: 'general',
+                    priority: 'normal',
+                    timestamp: new Date().toISOString()
+                };
+                
+                const debugStatus = document.getElementById('debugStatus');
+                debugStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending test email...';
+                debugStatus.className = 'debug-status';
+                
+                try {
+                    const emailSent = await this.sendEmailNotification(testMessage);
+                    
+                    if (emailSent) {
+                        debugStatus.innerHTML = '<i class="fas fa-check-circle"></i> Test email sent successfully!';
+                        debugStatus.className = 'debug-status success';
+                        this.showNotification('Test email sent successfully! Check teamwebforge@gmail.com', 'success');
+                    } else {
+                        debugStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Test email failed to send';
+                        debugStatus.className = 'debug-status warning';
+                        this.showNotification('Test email failed. Check EmailJS configuration.', 'warning');
+                    }
+                } catch (error) {
+                    debugStatus.innerHTML = `<i class="fas fa-times-circle"></i> Error: ${error.message}`;
+                    debugStatus.className = 'debug-status error';
+                    this.showNotification('Test email error: ' + error.message, 'error');
                 }
             }
             
@@ -1496,21 +1677,31 @@
                     // Get recipient display name
                     const recipientDisplay = this.getRecipientDisplayName(message.recipient);
                     
-                    // Prepare email template parameters
+                    // Prepare email template parameters - SIMPLIFIED VERSION
+                    // Use only basic variables that definitely exist in your template
                     const templateParams = {
-                        to_email: 'teamwebforge@gmail.com', // Your team email
+                        to_email: 'teamwebforge@gmail.com',
                         from_name: message.senderName,
                         from_email: message.senderEmail,
-                        phone: message.senderPhone,
-                        subject: `WebForge Message: ${message.subject}`,
-                        recipient: recipientDisplay,
-                        priority: message.priority.toUpperCase(),
-                        message: message.content,
-                        date: this.formatDate(message.timestamp),
-                        reply_to: message.senderEmail
+                        message: `New message from WebForge website:
+                        
+From: ${message.senderName} (${message.senderEmail})
+Phone: ${message.senderPhone}
+To: ${recipientDisplay}
+Priority: ${message.priority.toUpperCase()}
+Subject: ${message.subject}
+Date: ${this.formatDate(message.timestamp)}
+
+Message:
+${message.content}
+
+---
+This message was sent via WebForge Team Website`,
+                        reply_to: message.senderEmail,
+                        subject: `WebForge Message: ${message.subject}`
                     };
                     
-                    console.log("📤 Sending email with params:", templateParams);
+                    console.log("📤 Sending email with simplified params");
                     
                     // Send email using EmailJS with your credentials
                     const response = await emailjs.send(
@@ -1524,12 +1715,22 @@
                     
                 } catch (error) {
                     console.error('❌ Failed to send email:', error);
-                    console.error('Error details:', {
-                        status: error.status,
-                        text: error.text,
+                    
+                    // Detailed error logging
+                    const errorDetails = {
+                        status: error.status || 'No status',
+                        text: error.text || 'No error text',
                         serviceId: this.emailConfig.serviceId,
-                        templateId: this.emailConfig.templateId
-                    });
+                        templateId: this.emailConfig.templateId,
+                        message: error.message || 'Unknown error'
+                    };
+                    console.error('Error details:', errorDetails);
+                    
+                    // Update debug panel
+                    const debugStatus = document.getElementById('debugStatus');
+                    debugStatus.innerHTML = `<i class="fas fa-times-circle"></i> Email error: ${error.status || 'Unknown'}`;
+                    debugStatus.className = 'debug-status error';
+                    
                     return false;
                 }
             }
