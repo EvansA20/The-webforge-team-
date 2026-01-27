@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebForge - Professional Web Development Team</title>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("4-fLXl6Xcbd_-LWj-"); // Your EmailJS Public Key
+        })();
+    </script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -320,6 +328,43 @@
             max-width: 100%;
             filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.15));
             border-radius: var(--border-radius);
+        }
+
+        /* Contact Info Bar */
+        .contact-bar {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 0;
+            position: relative;
+            z-index: 999;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin: 5px 10px;
+        }
+
+        .contact-item i {
+            margin-right: 10px;
+            color: var(--accent-light);
+        }
+
+        .contact-item a {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .contact-item a:hover {
+            color: var(--accent-light);
         }
 
         /* About Section */
@@ -809,6 +854,21 @@
             transform: translateY(0);
         }
 
+        /* Loading Spinner */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* Responsive Design */
         @media (max-width: 992px) {
             .hero-content {
@@ -823,6 +883,10 @@
 
             .hero-text h1 {
                 font-size: 3rem;
+            }
+
+            .contact-info {
+                justify-content: center;
             }
         }
 
@@ -868,6 +932,15 @@
 
             .message-form-container, .message-inbox-container {
                 padding: 30px;
+            }
+
+            .contact-bar {
+                padding: 10px 0;
+            }
+
+            .contact-item {
+                font-size: 0.9rem;
+                margin: 5px;
             }
         }
 
@@ -920,6 +993,14 @@
         .notification.error {
             background-color: var(--accent);
         }
+
+        .notification.warning {
+            background-color: var(--warning);
+        }
+
+        .notification.info {
+            background-color: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -947,6 +1028,26 @@
             </ul>
         </div>
     </header>
+
+    <!-- Contact Info Bar -->
+    <div class="contact-bar">
+        <div class="container">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <a href="tel:+2348130651446">+234 813 065 1446</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fab fa-whatsapp"></i>
+                    <a href="https://wa.me/2348153279248" target="_blank">+234 815 327 9248 (WhatsApp)</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:teamwebforge@gmail.com">teamwebforge@gmail.com</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -1042,6 +1143,17 @@
                     <div class="lead-title">Financial Operations Lead</div>
                     <p>Manages budgeting, financial planning, and ensures the fiscal health of all projects and operations.</p>
                 </div>
+                
+                <!-- Security Analyst -->
+                <div class="department-card fade-in">
+                    <div class="department-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Security Analyst</h3>
+                    <div class="lead-name">Ajayi Victory Ayomide</div>
+                    <div class="lead-title">Security Operations Lead</div>
+                    <p>Ensures the security and integrity of all web applications, implementing best practices for data protection.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -1077,6 +1189,14 @@
                     <h3>Performance Optimization</h3>
                     <p>We optimize websites for speed and performance, improving SEO rankings and user satisfaction.</p>
                 </div>
+                
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Security Implementation</h3>
+                    <p>We implement robust security measures to protect your web applications from vulnerabilities and attacks.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -1088,7 +1208,7 @@
                 <h2>Message Center</h2>
             </div>
             
-            <p class="team-intro" style="margin-bottom: 30px;">Send a message to our team or view your previous messages. All messages are stored locally in your browser.</p>
+            <p class="team-intro" style="margin-bottom: 30px;">Send a message to our team. Messages will be stored locally and sent to our email for immediate response.</p>
             
             <div class="message-container">
                 <!-- Message Form -->
@@ -1096,27 +1216,32 @@
                     <h3>Send a Message</h3>
                     <form id="messageForm">
                         <div class="form-group">
-                            <label for="senderName">Your Name</label>
+                            <label for="senderName">Your Name *</label>
                             <input type="text" id="senderName" class="form-control" placeholder="Enter your name" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="senderEmail">Your Email</label>
+                            <label for="senderEmail">Your Email *</label>
                             <input type="email" id="senderEmail" class="form-control" placeholder="Enter your email" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="messageSubject">Subject</label>
+                            <label for="senderPhone">Phone Number (Optional)</label>
+                            <input type="text" id="senderPhone" class="form-control" placeholder="Enter your phone number">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="messageSubject">Subject *</label>
                             <input type="text" id="messageSubject" class="form-control" placeholder="Message subject" required>
                         </div>
                         
                         <div class="form-group">
-                            <label for="messageContent">Message</label>
+                            <label for="messageContent">Message *</label>
                             <textarea id="messageContent" class="form-control" placeholder="Type your message here..." required></textarea>
                         </div>
                         
                         <div class="form-group">
-                            <label for="recipient">Send to Department</label>
+                            <label for="recipient">Send to Department *</label>
                             <select id="recipient" class="form-control" required>
                                 <option value="">Select a department</option>
                                 <option value="team-lead">Team Lead (Ayanlude Evans Abayomi)</option>
@@ -1125,20 +1250,32 @@
                                 <option value="backend">Backend Department (Ayanlude Evans Abayomi)</option>
                                 <option value="ui-ux">UI/UX Department (Ajani Shukuroh Olamide)</option>
                                 <option value="finance">Finance Department (Lawlson Ayomide Esther)</option>
+                                <option value="security">Security Analyst (Ajayi Victory Ayomide)</option>
                                 <option value="general">General Inquiry</option>
                             </select>
                         </div>
                         
-                        <button type="submit" class="btn btn-accent" style="width: 100%;">
+                        <div class="form-group">
+                            <label for="priority">Priority Level</label>
+                            <select id="priority" class="form-control">
+                                <option value="low">Low Priority</option>
+                                <option value="normal" selected>Normal Priority</option>
+                                <option value="high">High Priority</option>
+                                <option value="urgent">Urgent</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-accent" style="width: 100%;" id="submitBtn">
                             <i class="fas fa-paper-plane"></i> Send Message
                         </button>
+                        <div id="formStatus" style="text-align: center; margin-top: 15px; font-size: 0.9rem;"></div>
                     </form>
                 </div>
                 
                 <!-- Message Inbox -->
                 <div class="message-inbox-container fade-in">
                     <div class="inbox-header">
-                        <h3>Your Messages</h3>
+                        <h3>Message History</h3>
                         <button class="btn btn-outline" id="clearMessagesBtn">
                             <i class="fas fa-trash"></i> Clear All
                         </button>
@@ -1195,9 +1332,10 @@
                 <div class="footer-column">
                     <h3>Contact Info</h3>
                     <ul class="footer-links">
+                        <li><i class="fas fa-phone"></i> +234 813 065 1446</li>
+                        <li><i class="fab fa-whatsapp"></i> +234 815 327 9248 (WhatsApp)</li>
                         <li><i class="fas fa-envelope"></i> teamwebforge@gmail.com</li>
-                        <li><i class="fas fa-phone"></i> +1 (234) 813651446</li>
-                        <li><i class="fas fa-map-marker-alt"></i> Ogbomoso Oyo State, Nigeria</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</li>
                     </ul>
                 </div>
                 
@@ -1209,12 +1347,14 @@
                         <li>Ishola Samuel Odunayo - Frontend</li>
                         <li>Ajani Shukuroh Olamide - UI/UX</li>
                         <li>Lawlson Ayomide Esther - Finance</li>
+                        <li>Ajayi Victory Ayomide - Security</li>
                     </ul>
                 </div>
             </div>
             
             <div class="copyright">
-                <p>&copy; 2026 WebForge Team. All rights reserved. Designed and developed by the WebForge team.</p>
+                <p>&copy; 2023 WebForge Team. All rights reserved. Designed and developed by the WebForge team.</p>
+                <p style="margin-top: 10px; font-size: 0.8rem;">Ready for Vercel Deployment | EmailJS Integrated</p>
             </div>
         </div>
     </footer>
@@ -1227,7 +1367,7 @@
             </button>
             <div class="modal-header">
                 <h3 id="modalSubject">Message Subject</h3>
-                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; flex-wrap: wrap;">
                     <div>
                         <strong>From:</strong> <span id="modalSender">Sender Name</span>
                     </div>
@@ -1237,6 +1377,9 @@
                     <div>
                         <strong>Date:</strong> <span id="modalDate">Date</span>
                     </div>
+                </div>
+                <div style="margin-top: 10px;">
+                    <strong>Priority:</strong> <span id="modalPriority" style="padding: 3px 8px; border-radius: 4px; background-color: var(--light-gray);">Normal</span>
                 </div>
             </div>
             <div class="modal-body">
@@ -1256,11 +1399,16 @@
     </div>
 
     <script>
-        // Message Center Application
+        // Message Center Application with EmailJS Integration
         class MessageCenter {
             constructor() {
                 this.messages = this.loadMessages();
                 this.currentMessageId = null;
+                this.emailServiceEnabled = false;
+                this.emailConfig = {
+                    serviceId: 'service_2ihgcej', // Your EmailJS Service ID
+                    templateId: 'template_q1jvxbz' // Your EmailJS Template ID
+                };
                 this.init();
             }
             
@@ -1270,6 +1418,22 @@
                 this.setupEventListeners();
                 this.updateMessageStats();
                 this.updateUnreadCount();
+                
+                // Check if EmailJS is properly initialized
+                if (typeof emailjs !== 'undefined' && emailjs.init) {
+                    this.emailServiceEnabled = true;
+                    console.log("✅ EmailJS is ready for sending emails");
+                    console.log("📧 Service ID:", this.emailConfig.serviceId);
+                    console.log("📝 Template ID:", this.emailConfig.templateId);
+                    
+                    // Show success notification
+                    setTimeout(() => {
+                        this.showNotification('Email service is ready! Messages will be sent to teamwebforge@gmail.com', 'info');
+                    }, 2000);
+                } else {
+                    console.error("❌ EmailJS not properly initialized.");
+                    this.showNotification('Email service not configured. Please check EmailJS setup.', 'warning');
+                }
             }
             
             // Load messages from localStorage
@@ -1285,24 +1449,89 @@
                 this.updateUnreadCount();
             }
             
-            // Add a new message
-            addMessage(senderName, senderEmail, subject, content, recipient) {
+            // Add a new message and send email notification
+            async addMessage(senderName, senderEmail, senderPhone, subject, content, recipient, priority) {
                 const newMessage = {
                     id: Date.now(),
                     senderName,
                     senderEmail,
+                    senderPhone: senderPhone || 'Not provided',
                     subject,
                     content,
                     recipient,
+                    priority,
                     timestamp: new Date().toISOString(),
-                    read: false
+                    read: false,
+                    emailSent: false
                 };
                 
+                // Add to local storage
                 this.messages.unshift(newMessage);
                 this.saveMessages();
                 this.renderMessageList();
                 
-                return newMessage.id;
+                // Send email notification
+                const emailSent = await this.sendEmailNotification(newMessage);
+                newMessage.emailSent = emailSent;
+                
+                // Update the message with email status
+                const index = this.messages.findIndex(msg => msg.id === newMessage.id);
+                if (index !== -1) {
+                    this.messages[index].emailSent = emailSent;
+                    this.saveMessages();
+                    this.renderMessageList();
+                }
+                
+                return { id: newMessage.id, emailSent };
+            }
+            
+            // Send email notification using EmailJS
+            async sendEmailNotification(message) {
+                if (!this.emailServiceEnabled) {
+                    console.warn("Email service not enabled.");
+                    return false;
+                }
+                
+                try {
+                    // Get recipient display name
+                    const recipientDisplay = this.getRecipientDisplayName(message.recipient);
+                    
+                    // Prepare email template parameters
+                    const templateParams = {
+                        to_email: 'teamwebforge@gmail.com', // Your team email
+                        from_name: message.senderName,
+                        from_email: message.senderEmail,
+                        phone: message.senderPhone,
+                        subject: `WebForge Message: ${message.subject}`,
+                        recipient: recipientDisplay,
+                        priority: message.priority.toUpperCase(),
+                        message: message.content,
+                        date: this.formatDate(message.timestamp),
+                        reply_to: message.senderEmail
+                    };
+                    
+                    console.log("📤 Sending email with params:", templateParams);
+                    
+                    // Send email using EmailJS with your credentials
+                    const response = await emailjs.send(
+                        this.emailConfig.serviceId,
+                        this.emailConfig.templateId,
+                        templateParams
+                    );
+                    
+                    console.log('✅ Email sent successfully:', response.status, response.text);
+                    return true;
+                    
+                } catch (error) {
+                    console.error('❌ Failed to send email:', error);
+                    console.error('Error details:', {
+                        status: error.status,
+                        text: error.text,
+                        serviceId: this.emailConfig.serviceId,
+                        templateId: this.emailConfig.templateId
+                    });
+                    return false;
+                }
             }
             
             // Delete a message by ID
@@ -1344,6 +1573,7 @@
                     'backend': 'Backend Department (Ayanlude Evans Abayomi)',
                     'ui-ux': 'UI/UX Department (Ajani Shukuroh Olamide)',
                     'finance': 'Finance Department (Lawlson Ayomide Esther)',
+                    'security': 'Security Analyst (Ajayi Victory Ayomide)',
                     'general': 'General Inquiry'
                 };
                 
@@ -1360,6 +1590,28 @@
                     hour: '2-digit',
                     minute: '2-digit'
                 });
+            }
+            
+            // Get priority badge color
+            getPriorityColor(priority) {
+                const colors = {
+                    'low': '#4caf50',
+                    'normal': '#2196f3',
+                    'high': '#ff9800',
+                    'urgent': '#f44336'
+                };
+                return colors[priority] || '#2196f3';
+            }
+            
+            // Get priority display text
+            getPriorityDisplay(priority) {
+                const display = {
+                    'low': 'Low Priority',
+                    'normal': 'Normal Priority',
+                    'high': 'High Priority',
+                    'urgent': 'Urgent'
+                };
+                return display[priority] || 'Normal Priority';
             }
             
             // Render the message list
@@ -1382,17 +1634,27 @@
                     const recipientDisplay = this.getRecipientDisplayName(message.recipient);
                     const dateDisplay = this.formatDate(message.timestamp);
                     const messageClass = message.read ? 'message-item' : 'message-item unread';
+                    const priorityColor = this.getPriorityColor(message.priority);
+                    const priorityDisplay = this.getPriorityDisplay(message.priority);
+                    const emailStatus = message.emailSent ? 
+                        '<i class="fas fa-paper-plane" style="color: #4caf50; margin-left: 5px;" title="Email sent to team"></i>' : 
+                        '<i class="fas fa-exclamation-circle" style="color: #ff9800; margin-left: 5px;" title="Email not sent - saved locally"></i>';
                     
                     html += `
                         <div class="${messageClass}" data-id="${message.id}">
                             <div class="message-header">
-                                <div class="message-sender">${message.senderName}</div>
+                                <div class="message-sender">${message.senderName} ${emailStatus}</div>
                                 <div class="message-time">${dateDisplay}</div>
                             </div>
                             <div class="message-subject">${message.subject}</div>
                             <div class="message-preview">${message.content.substring(0, 100)}${message.content.length > 100 ? '...' : ''}</div>
-                            <div style="margin-top: 10px; font-size: 0.85rem; color: var(--gray);">
-                                <i class="fas fa-paper-plane"></i> To: ${recipientDisplay}
+                            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 0.85rem; color: var(--gray);">
+                                    <i class="fas fa-paper-plane"></i> To: ${recipientDisplay}
+                                </div>
+                                <div style="font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; background-color: ${priorityColor}20; color: ${priorityColor}; font-weight: 500;">
+                                    ${priorityDisplay}
+                                </div>
                             </div>
                         </div>
                     `;
@@ -1418,10 +1680,16 @@
                 
                 // Update modal content
                 document.getElementById('modalSubject').textContent = message.subject;
-                document.getElementById('modalSender').textContent = `${message.senderName} (${message.senderEmail})`;
+                document.getElementById('modalSender').textContent = `${message.senderName} (${message.senderEmail}) - ${message.senderPhone}`;
                 document.getElementById('modalRecipient').textContent = this.getRecipientDisplayName(message.recipient);
                 document.getElementById('modalDate').textContent = this.formatDate(message.timestamp);
                 document.getElementById('modalMessage').textContent = message.content;
+                
+                // Update priority
+                const priorityElement = document.getElementById('modalPriority');
+                priorityElement.textContent = this.getPriorityDisplay(message.priority);
+                priorityElement.style.backgroundColor = this.getPriorityColor(message.priority) + '20';
+                priorityElement.style.color = this.getPriorityColor(message.priority);
                 
                 // Show modal
                 document.getElementById('messageModal').classList.add('active');
@@ -1458,11 +1726,18 @@
                 
                 notificationText.textContent = text;
                 
+                notification.className = 'notification';
+                
                 if (type === 'error') {
                     notification.classList.add('error');
                     notification.querySelector('i').className = 'fas fa-exclamation-circle';
+                } else if (type === 'warning') {
+                    notification.classList.add('warning');
+                    notification.querySelector('i').className = 'fas fa-exclamation-triangle';
+                } else if (type === 'info') {
+                    notification.classList.add('info');
+                    notification.querySelector('i').className = 'fas fa-info-circle';
                 } else {
-                    notification.classList.remove('error');
                     notification.querySelector('i').className = 'fas fa-check-circle';
                 }
                 
@@ -1476,28 +1751,57 @@
             // Setup event listeners
             setupEventListeners() {
                 // Message form submission
-                document.getElementById('messageForm').addEventListener('submit', (e) => {
+                document.getElementById('messageForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
                     
                     const senderName = document.getElementById('senderName').value;
                     const senderEmail = document.getElementById('senderEmail').value;
+                    const senderPhone = document.getElementById('senderPhone').value;
                     const subject = document.getElementById('messageSubject').value;
                     const content = document.getElementById('messageContent').value;
                     const recipient = document.getElementById('recipient').value;
+                    const priority = document.getElementById('priority').value;
+                    const submitBtn = document.getElementById('submitBtn');
+                    const formStatus = document.getElementById('formStatus');
                     
                     if (!senderName || !senderEmail || !subject || !content || !recipient) {
-                        this.showNotification('Please fill in all fields.', 'error');
+                        this.showNotification('Please fill in all required fields.', 'error');
                         return;
                     }
                     
-                    // Add the message
-                    this.addMessage(senderName, senderEmail, subject, content, recipient);
+                    // Disable submit button and show loading state
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner"></span> Sending...';
+                    submitBtn.disabled = true;
+                    formStatus.innerHTML = '';
                     
-                    // Show success notification
-                    this.showNotification('Message sent successfully!');
-                    
-                    // Reset form
-                    document.getElementById('messageForm').reset();
+                    try {
+                        // Add the message
+                        const result = await this.addMessage(
+                            senderName, senderEmail, senderPhone, subject, content, recipient, priority
+                        );
+                        
+                        // Show success notification
+                        if (result.emailSent) {
+                            this.showNotification('Message sent successfully! Email notification sent to teamwebforge@gmail.com');
+                            formStatus.innerHTML = '<span style="color: var(--success);">✓ Message sent and email notification delivered to team</span>';
+                        } else {
+                            this.showNotification('Message saved locally. Email notification failed.', 'warning');
+                            formStatus.innerHTML = '<span style="color: var(--warning);">⚠ Message saved locally but email notification failed</span>';
+                        }
+                        
+                        // Reset form
+                        document.getElementById('messageForm').reset();
+                        
+                    } catch (error) {
+                        console.error('Error sending message:', error);
+                        this.showNotification('Error sending message. Please try again.', 'error');
+                        formStatus.innerHTML = '<span style="color: var(--accent);">✗ Error sending message</span>';
+                    } finally {
+                        // Re-enable submit button
+                        submitBtn.innerHTML = originalBtnText;
+                        submitBtn.disabled = false;
+                    }
                 });
                 
                 // Clear all messages button
@@ -1612,9 +1916,11 @@
                 messageCenter.addMessage(
                     'WebForge Team',
                     'welcome@webforge.com',
+                    '+234 813 065 1446',
                     'Welcome to WebForge Message Center',
-                    'Hello! Welcome to the WebForge team message center. Here you can send messages to our team leads and view your message history. All messages are stored locally in your browser. Feel free to send us a message to get started!',
-                    'general'
+                    'Hello! Welcome to the WebForge team message center. Here you can send messages to our team leads and view your message history. Messages are stored locally in your browser and also sent to our team email for immediate response. Feel free to send us a message to get started!',
+                    'general',
+                    'normal'
                 );
             }
         });
